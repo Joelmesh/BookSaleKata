@@ -14,14 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class BookControllerIntegrationTest {
+public class PriceCalculatorControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void listBooksReturnsAvailableBookCatalog() throws Exception {
-        mockMvc.perform(get("/api/v1/books")
+        mockMvc.perform(get("/api/v1/checkout/books")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5))
@@ -30,10 +30,10 @@ public class BookControllerIntegrationTest {
 
     @Test
     void calculateBasketPriceEndpointReturnsExpectedValue() throws Exception {
-        mockMvc.perform(post("/api/v1/books/calculate")
+        mockMvc.perform(post("/api/v1/checkout/price")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("[0,1]"))
+                .content("{\"bookIds\":[0,1] }"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(95.0));
+                .andExpect(jsonPath("$.totalPrice").value(95.0));
     }
 }
